@@ -1,51 +1,30 @@
 import { GraphQLServer } from 'graphql-yoga'
+import customPosts from './utils'
 
 // Type definitions (schema)
 const typeDefs = `
     type Query {
-        id: ID!
-        name: String!
-        age: Int!
-        email: String
-        extraInfo: extraUserInfo!
-        updateInfo(name: String, age: Int, email: String, gender: String, address: String, dob: String): String
+        posts(active: Boolean, title: String): [Post!]!
     }
 
-    type extraUserInfo {
-        address: String!
-        isSingle: Boolean!
-        dob: String!
-        gender: String!
+    type Post {
+        id: ID!
+        title: String!
+        isActive: Boolean!
+        body: String!
     }
 `
 
 // Resolvers
 const resolvers = {
     Query: {
-        id() {
-            return 'fsd-123sad-asd2d-awsdd2'
-        },
-        name() {
-            return 'John'
-        },
-        age() {
-            return 19
-        },
-        email(){
-            return (Math.random() > 0.5 ? 'John@Johny.com' : null)
-        },
-        updateInfo(parent, args, ctx, info){
+        posts(parent,args) {
             if(args){
-                return args.name
+                return customPosts.filter((post) => {
+                    return post.isActive === args.active
+                })     
             }
-        },
-        extraInfo() {
-            return {
-                address: '127 George Washington Street',
-                isSingle: Math.random() > 0.8 ? false : true,
-                dob: '12th June 2002',
-                gender: 'Male'
-            }
+            return customPosts
         }
     }
 }
