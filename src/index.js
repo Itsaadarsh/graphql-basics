@@ -5,12 +5,14 @@ import {customPosts,customUsers} from './utils'
 const typeDefs = `
     type Query {
         posts: [Post!]!
+        users: [User!]!
     }  
     
-    type Admin {
+    type User {
         id: ID!
         name: String!
         email: String!
+        post: [Post!]!
     }
 
     type Post {
@@ -18,7 +20,7 @@ const typeDefs = `
         title: String!
         isActive: Boolean!
         body: String!
-        admin: Admin!
+        admin: User!
     }
 `
 
@@ -27,14 +29,22 @@ const resolvers = {
     Query: {
         posts() {
             return customPosts
+        },
+        users(){
+            return customUsers
         }
     },
     Post: {
         admin(parent) {
            return customUsers.find((user) => {
-                const res = user.id === parent.adminid
-                console.log(res);
-                return res
+                return user.id === parent.adminid
+            })
+        }
+    },
+    User: {
+        post(parent){
+            return customPosts.filter(post => {
+                return post.adminid === parent.id
             })
         }
     }

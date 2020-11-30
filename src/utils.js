@@ -33,7 +33,7 @@ const customPosts = [
         title: "Getting started with GraphQL Part 4",
         isActive: true,
         body: "hey thisn oasn aolsnmdalkjdalk jalk j jldjfflj j f jkl fjsfajw  Ipsum is simply dummy text of the printing and typesetting industry.",
-        adminid: '3'
+        adminid: '1'
 
     },{
         id: "42k3lj42lk3j4-sadf3-rf3-f-42k3lj42lk3j4-w",
