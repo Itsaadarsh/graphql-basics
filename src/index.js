@@ -6,8 +6,16 @@ const typeDefs = `
         id: ID!
         name: String!
         age: Int!
-        alive: Boolean!
-        avgLifeSpan: Float!
+        isAlive: Boolean!
+        avgLifeSpan : Float!
+        extraInfo: UserInfo!
+    }
+
+    type UserInfo {
+        email: String
+        address: String!
+        isSingle: Boolean!
+        wages: Float!
     }
 `
 
@@ -23,12 +31,20 @@ const resolvers = {
         age() {
             return 19
         },
-        alive() {
-            return (Math.random() > 0.5 ? false:true )
+        isAlive() {
+            return (Math.random() > 0.5 ? false : true )
         },
         avgLifeSpan() {
-            return (Math.random() * 100)
+            return (Math.floor(Math.random() * 100))
         },
+        extraInfo() {
+            return {
+                email: Math.random() > 0.5 ? 'John@Johny.com' : null,
+                address: '127 George Washington Street',
+                isSingle: Math.random() > 0.8 ? false : true,
+                wages: Math.floor(Math.random() * 10000)
+            }
+        }
     }
 }
 
