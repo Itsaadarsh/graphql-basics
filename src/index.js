@@ -1,10 +1,16 @@
 import { GraphQLServer } from 'graphql-yoga'
-import customPosts from './utils'
+import {customPosts,customUsers} from './utils'
 
 // Type definitions (schema)
 const typeDefs = `
     type Query {
-        posts(active: Boolean, title: String): [Post!]!
+        posts: [Post!]!
+    }  
+    
+    type Admin {
+        id: ID!
+        name: String!
+        email: String!
     }
 
     type Post {
@@ -12,19 +18,24 @@ const typeDefs = `
         title: String!
         isActive: Boolean!
         body: String!
+        admin: Admin!
     }
 `
 
 // Resolvers
 const resolvers = {
     Query: {
-        posts(parent,args) {
-            if(args){
-                return customPosts.filter((post) => {
-                    return post.isActive === args.active
-                })     
-            }
+        posts() {
             return customPosts
+        }
+    },
+    Post: {
+        admin(parent) {
+           return customUsers.find((user) => {
+                const res = user.id === parent.adminid
+                console.log(res);
+                return res
+            })
         }
     }
 }
