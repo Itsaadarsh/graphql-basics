@@ -6,16 +6,16 @@ const typeDefs = `
         id: ID!
         name: String!
         age: Int!
-        isAlive: Boolean!
-        avgLifeSpan : Float!
-        extraInfo: UserInfo!
+        email: String
+        extraInfo: extraUserInfo!
+        updateInfo(name: String, age: Int, email: String, gender: String, address: String, dob: String): String
     }
 
-    type UserInfo {
-        email: String
+    type extraUserInfo {
         address: String!
         isSingle: Boolean!
-        wages: Float!
+        dob: String!
+        gender: String!
     }
 `
 
@@ -31,18 +31,20 @@ const resolvers = {
         age() {
             return 19
         },
-        isAlive() {
-            return (Math.random() > 0.5 ? false : true )
+        email(){
+            return (Math.random() > 0.5 ? 'John@Johny.com' : null)
         },
-        avgLifeSpan() {
-            return (Math.floor(Math.random() * 100))
+        updateInfo(parent, args, ctx, info){
+            if(args){
+                return args.name
+            }
         },
         extraInfo() {
             return {
-                email: Math.random() > 0.5 ? 'John@Johny.com' : null,
                 address: '127 George Washington Street',
                 isSingle: Math.random() > 0.8 ? false : true,
-                wages: Math.floor(Math.random() * 10000)
+                dob: '12th June 2002',
+                gender: 'Male'
             }
         }
     }
