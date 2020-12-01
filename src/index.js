@@ -15,13 +15,13 @@ const typeDefs = `
         createUser(data: CreateUserInput!): User!
         createPost(data: CreatePostInput!): Post!
         createComment(data: CreateCommentInput!): Comment!
+        deleteUser(id: ID!): User!
     }
     
     input CreateUserInput {
         name: String!
         email: String!
     }
-
 
     input CreatePostInput {
         title: String
@@ -93,6 +93,7 @@ const resolvers = {
             const isUserValid = customUsers.some(user => user.id === args.data.userid)
             
             if(!isUserValid) throw new Error('SignIn to post!')
+            
             const post  = {
                 id: uuidv4(),
                ...args
@@ -115,6 +116,15 @@ const resolvers = {
 
             customComment.push(comment)
             return comment
+        },
+        deleteUser(parent,args){
+            const delUserIndex = customUsers.findIndex(user => user.id === args.id)
+
+            if(delUserIndex === -1) throw new Error('User Not Found')
+
+            const delUser = customUsers.splice(delUserIndex, 1)
+
+            return delUser[0]
         }
     },
     Post: {
