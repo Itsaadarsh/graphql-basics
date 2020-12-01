@@ -1,11 +1,12 @@
 import { GraphQLServer } from 'graphql-yoga'
-import {customPosts,customUsers} from './utils'
+import {customPosts,customUsers, customComment} from './utils'
 
 // Type definitions (schema)
 const typeDefs = `
     type Query {
         posts: [Post!]!
         users: [User!]!
+        comments: [Comment!]!
     }  
     
     type User {
@@ -13,6 +14,7 @@ const typeDefs = `
         name: String!
         email: String!
         post: [Post!]!
+        comment: [Comment!]!
     }
 
     type Post {
@@ -21,6 +23,14 @@ const typeDefs = `
         isActive: Boolean!
         body: String!
         admin: User!
+        comments: [Comment!]!
+    }
+
+    type Comment {
+        id: ID!
+        text: String!
+        user: User!
+        post: Post!
     }
 `
 
@@ -32,6 +42,9 @@ const resolvers = {
         },
         users(){
             return customUsers
+        },
+        comments(){
+            return customComment
         }
     },
     Post: {
@@ -39,12 +52,34 @@ const resolvers = {
            return customUsers.find((user) => {
                 return user.id === parent.adminid
             })
+        },
+        comments(parent){
+            return customComment.filter(comment => {
+                return comment.postid === parent.id
+            })
         }
     },
     User: {
         post(parent){
             return customPosts.filter(post => {
                 return post.adminid === parent.id
+            })
+        },
+        comment(parent){
+            return customComment.filter(comment => {
+                return comment.userid === parent.id
+            })
+        }
+    },
+    Comment: {
+        user(parent){
+            return customUsers.find(user => {
+                return user.id === parent.userid
+            })
+        },
+        post(parent){
+            return customPosts.find(post => {
+                return post.id === parent.postid
             })
         }
     }
