@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
+import { stringify, v4 as uuidv4 } from 'uuid';
 
 export const mutation = {
     createUser(parent,args,ctx){
@@ -51,5 +51,21 @@ export const mutation = {
         const delUser = ctx.customUsers.splice(delUserIndex, 1)
 
         return delUser[0]
+    },
+    updateUser(parent,args,ctx){
+        const {id, data}= {...args}
+        const isUserAvai = ctx.customUsers.find((user) => user.id === id)
+
+        if(!isUserAvai) throw new Error('USER not Valid')
+
+        if(typeof data.email === 'string' ){
+            const isEmailTaken = ctx.customUsers.some(user => user.email === args.data.email)
+            if(isEmailTaken) throw new Error('Email taken!')            
+            isUserAvai.email = data.email
+        }
+        if(typeof data.name === 'string' ){
+            isUserAvai.name = data.name
+        }
+        return isUserAvai
     }
 }
