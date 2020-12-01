@@ -12,11 +12,30 @@ const typeDefs = `
     }
 
     type Mutation {
-        createUser(name: String!, email: String!): User!
-        createPost(title: String, isActive: Boolean!, body: String!, userid: String!): Post!
-        createComment(text: String!, userid: String!, postid: String!): Comment!
+        createUser(data: CreateUserInput!): User!
+        createPost(data: CreatePostInput!): Post!
+        createComment(data: CreateCommentInput!): Comment!
     }
     
+    input CreateUserInput {
+        name: String!
+        email: String!
+    }
+
+
+    input CreatePostInput {
+        title: String
+        isActive: Boolean!
+        body: String!
+        userid: String!
+    }
+
+    input CreateCommentInput{
+        text: String!
+        userid: String!
+        postid: String!
+    }
+
     type User {
         id: ID!
         name: String!
@@ -57,14 +76,13 @@ const resolvers = {
     },
     Mutation: {
         createUser(parent,args){
-            const isEmailTaken = customUsers.some(user => user.email === args.email)
+            const isEmailTaken = customUsers.some(user => user.email === args.data.email)
             
             if(isEmailTaken) throw new Error('Email taken!')
 
             const user = {
                 id: uuidv4(),
-                name: args.name,
-                email: args.email
+                ...args.data
             }
 
             customUsers.push(user)
@@ -72,32 +90,27 @@ const resolvers = {
             return user 
         },
         createPost(parent, args){
-            const isUserValid = customUsers.some(user => user.id === args.userid)
+            const isUserValid = customUsers.some(user => user.id === args.data.userid)
             
             if(!isUserValid) throw new Error('SignIn to post!')
-
             const post  = {
                 id: uuidv4(),
-                title: args.title,
-                isActive: args.isActive,
-                body: args.body,
-                adminid: args.userid
+               ...args
             }
+
 
             customPosts.push(post)
 
             return post
         },
         createComment(parent,args){
-            const isPostValid = customPosts.some(post => post.id === args.postid)
+            const isPostValid = customPosts.some(post => post.id === args.data.postid && post.isActive)
 
             if(!isPostValid) throw new Error('Something Went Wrong! Try Again.')
 
             const comment = {
                 id: uuidv4(),
-                text: args.text,
-                userid: args.userid,
-                postid: args.postid
+                ...args.data
             }
 
             customComment.push(comment)
