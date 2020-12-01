@@ -13,6 +13,8 @@ const typeDefs = `
 
     type Mutation {
         createUser(name: String!, email: String!): User!
+        createPost(title: String, isActive: Boolean!, body: String!, userid: String!): Post!
+        createComment(text: String!, userid: String!, postid: String!): Comment!
     }
     
     type User {
@@ -56,9 +58,8 @@ const resolvers = {
     Mutation: {
         createUser(parent,args){
             const isEmailTaken = customUsers.some(user => user.email === args.email)
-            if(isEmailTaken){
-                throw new Error('Email taken!')
-            }
+            
+            if(isEmailTaken) throw new Error('Email taken!')
 
             const user = {
                 id: uuidv4(),
@@ -68,7 +69,39 @@ const resolvers = {
 
             customUsers.push(user)
 
-            return user
+            return user 
+        },
+        createPost(parent, args){
+            const isUserValid = customUsers.some(user => user.id === args.userid)
+            
+            if(!isUserValid) throw new Error('SignIn to post!')
+
+            const post  = {
+                id: uuidv4(),
+                title: args.title,
+                isActive: args.isActive,
+                body: args.body,
+                adminid: args.userid
+            }
+
+            customPosts.push(post)
+
+            return post
+        },
+        createComment(parent,args){
+            const isPostValid = customPosts.some(post => post.id === args.postid)
+
+            if(!isPostValid) throw new Error('Something Went Wrong! Try Again.')
+
+            const comment = {
+                id: uuidv4(),
+                text: args.text,
+                userid: args.userid,
+                postid: args.postid
+            }
+
+            customComment.push(comment)
+            return comment
         }
     },
     Post: {
