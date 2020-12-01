@@ -17,7 +17,7 @@ input CreateUserInput {
 }
 
 input CreatePostInput {
-  title: String
+  title: String!
   isActive: Boolean!
   body: String!
   userid: String!
