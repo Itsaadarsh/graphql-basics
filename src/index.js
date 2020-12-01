@@ -3,64 +3,6 @@ import {customPosts,customUsers, customComment} from './utils'
 import { v4 as uuidv4 } from 'uuid';
 
 
-// Type definitions (schema)
-const typeDefs = `
-    type Query {
-        posts: [Post!]!
-        users: [User!]!
-        comments: [Comment!]!
-    }
-
-    type Mutation {
-        createUser(data: CreateUserInput!): User!
-        createPost(data: CreatePostInput!): Post!
-        createComment(data: CreateCommentInput!): Comment!
-        deleteUser(id: ID!): User!
-    }
-    
-    input CreateUserInput {
-        name: String!
-        email: String!
-    }
-
-    input CreatePostInput {
-        title: String
-        isActive: Boolean!
-        body: String!
-        userid: String!
-    }
-
-    input CreateCommentInput{
-        text: String!
-        userid: String!
-        postid: String!
-    }
-
-    type User {
-        id: ID!
-        name: String!
-        email: String!
-        post: [Post!]!
-        comment: [Comment!]!
-    }
-
-    type Post {
-        id: ID!
-        title: String!
-        isActive: Boolean!
-        body: String!
-        admin: User!
-        comments: [Comment!]!
-    }
-
-    type Comment {
-        id: ID!
-        text: String!
-        user: User!
-        post: Post!
-    }
-`
-
 // Resolvers
 const resolvers = {
     Query: {
@@ -166,7 +108,7 @@ const resolvers = {
 }
 
 const server = new GraphQLServer({
-    typeDefs,
+    typeDefs: 'src/schema.graphql',
     resolvers
 })
 
