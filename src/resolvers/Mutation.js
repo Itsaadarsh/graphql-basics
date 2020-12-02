@@ -41,6 +41,8 @@ export const mutation = {
         }
 
         ctx.customComment.push(comment)
+        ctx.pubsub.publish(`comment: ${args.data.postid}`, {comment})
+        
         return comment
     },
     deleteUser(parent,args,ctx){
